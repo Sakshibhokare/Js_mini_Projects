@@ -10,131 +10,209 @@ const symbolsCheck = document.querySelector("#symbols");
 const indicator = document.querySelector("[data-indicator]");
 const generateBtn = document.querySelector(".generateButton");
 const allCheckBox = document.querySelectorAll("input[type=checkbox]");
-const symbols='!@#$%^&*()-_=+[]{}|;:,.<>/?'
+const symbols = '!@#$%^&*()-_=+[]{}|;:,.<>/?'
 
 let password = "";
-let passwordLength= 10;
-let checkCount=1;
+let passwordLength = 10;
+let checkCount = 1;
 // set strength circle color grey
 
 handleSlider();
 
 //set password length
-function handleSlider(){
-  inputSlider.value=passwordLength;
-  lengthDisplay.innerText=passwordLength;
+function handleSlider() {
+    inputSlider.value = passwordLength;
+    lengthDisplay.innerText = passwordLength;
 
 
 }
 
-function setIndicator(color){
-      indicator.style.backgroundColor = color;
-      indicator.style.boxShadow = '0px 0px 10px 5px color'
+function setIndicator(color) {
+    indicator.style.backgroundColor = color;
+    indicator.style.boxShadow = '0px 0px 10px 5px color'
 }
 
-function getRndInteger(min, max){
+function getRndInteger(min, max) {
     //Math.random() will give values between 0 to 1, so need to multiply
     // in which 0 is inclusive and 1 is exclusive if multiplied by max-min, then the length will be min to max, but there is a possibility of getting flooting point number
     // so only for integers will use Math.floor function
     // we wqnt min to max range so (min+0 = (max-min) +min  
-   return Math.floor(Math.random()*(max-min)) + min 
+    return Math.floor(Math.random() * (max - min)) + min
 }
 
-function generateRandomNumber(){
-   return getRndInteger(0,9)
+function generateRandomNumber() {
+    return getRndInteger(0, 9)
 }
 
 //a to z ASCI value will be 
-function generateLowerCase(){
-    return  String.fromCharCode(getRndInteger(97, 123) );//convert number to Character 
+function generateLowerCase() {
+    return String.fromCharCode(getRndInteger(97, 123));//convert number to Character 
 }
 
-function generateUpperCase(){
+function generateUpperCase() {
     return String.fromCharCode(getRndInteger(65, 91))
 }
 
-function generateSymbol(){
+function generateSymbol() {
     const randNum = getRndInteger(0, symbols.length);
     return symbols.charAt(randNum);  //char at funcion will return the character at the position 
 }
 
-function calcStrength(){
-     let hasUpper=false;
-     let hasLower=false;
-     let hasNumber=false;
-     let hasSym = false;
+function calcStrength() {
+    let hasUpper = false;
+    let hasLower = false;
+    let hasNumber = false;
+    let hasSym = false;
 
-     if(uppercaseCheck.checked) hasUpper=true;
-     if(lowercaseCheck.checked) hasLower=true;
-     if(numberCheck.checked) hasNumber=true;
-     if(symbolsCheck.checked) hasSym=true;
+    if (uppercaseCheck.checked) hasUpper = true;
+    if (lowercaseCheck.checked) hasLower = true;
+    if (numberCheck.checked) hasNumber = true;
+    if (symbolsCheck.checked) hasSym = true;
 
-     if(hasUpper && hasLower && (hasNumber|| hasSym) && passwordLength>=8){
+    if (hasUpper && hasLower && (hasNumber || hasSym) && passwordLength >= 8) {
         setIndicator('#0f0');
-     }else if(
-        (hasLower || hasUpper)&& 
+    } else if (
+        (hasLower || hasUpper) &&
         (hasNumber || hasSym) &&
         passwordLength >= 6
-     ){
+    ) {
         setIndicator("#ff0")
-     }
-     else{
+    }
+    else {
         setIndicator("#f00")
-     }
-    
+    }
+
 }
 
 
-async function copyContent(){
-    try{
+async function copyContent() {
+    try {
         await navigator.clipboard.writeText(passwordDisplay.value);
-       copyMsg.innerText="copied";
+        copyMsg.innerText = "copied";
 
     }
-    catch(e){
-        copyMsg.innerText="failed"
+    catch (e) {
+        copyMsg.innerText = "failed"
     }
 
     copyMsg.classList.add("active");
 
 
-//we can do it like display none
-    setTimeout(()=>{
+    //we can do it like display none
+    setTimeout(() => {
         copyMsg.classList.remove("active");
-    },2000);
+    }, 2000);
 
-   
+
 }
 
-inputSlider.addEventListener('input', (e)=>{
-    passwordLength=e.target.value;
+inputSlider.addEventListener('input', (e) => {
+    passwordLength = e.target.value;
     handleSlider();
 })
 
-copyBtn.addEventListener('click',()=>{
-    if(passwordDisplay.value)
-    copyContent();
-})
+// copyBtn.addEventListener('click', (e) => {
+//     if (passwordDisplay.value)
+//         copyContent();
+// })
 
-function handleCheckboxChange(){
-    checkCount=0;
-    allCheckBox.forEach((checkbox)=>{
-        if(checkbox.checked)
-        checkCount++;
+function handleCheckboxChange() {
+    checkCount = 0;
+    allCheckBox.forEach((checkbox) => {
+        if (checkbox.checked)
+            checkCount++;
     })
 
     //special condition
-    if(passwordLength< checkCount){
-        passwordLength=checkCount;
+    if (passwordLength < checkCount) {
+        passwordLength = checkCount;
         handleSlider();
     }
 }
 
-allCheckBox.forEach((checkbox)=>{
+allCheckBox.forEach((checkbox) => {
     checkbox.addEventListener('change', handleCheckboxChange)
 })
 
-generateBtn.addEventListener('click',()=>{
+function shufflePassword(array){
+//Fisher yates method
+for(let i= array.length-1; i>0; i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+}
+let str="";
+array.forEach((el)=>(str+=el));
+return str;
+}
+
+generateBtn.addEventListener('click', () => {
+    //none of the checkbox are selected 
+    if (checkCount <= 0) return;
+
+    if (passwordLength < checkCount) {
+        passwordLength = checkCount;
+        handleSlider();
+    }
+
+    //lets start the journey to generate new password 
+    //   remove the old password 
+    password = "";
+
+    //lets put the stuff mentioned by checkboxes
+    // it will only generate four character 
+    // if(uppercaseCheck.checked){
+    //     password+=generateUpperCase();
+    // }
+    // if(lowercaseCheck.checked){
+    //     password+=generateLowerCase();
+    // }
+    // if(numberCheck.checked){
+    //     password+=generateRandomNumber();
+    // }
+    // if(symbolsCheck.checked){
+    //     password+=generateSymbol();
+    // }
+
+
+    // to handle the remaining characters
+    let funcArr = [];
+
+    if (uppercaseCheck.checked)
+        funcArr.push(generateUpperCase);
+
+    if (lowercaseCheck.checked)
+        funcArr.push(generateLowerCase);
+
+    if (numberCheck.checked)
+        funcArr.push(generateRandomNumber);
+
+    if (symbolsCheck.checked)
+        funcArr.push(generateSymbol)
+
+//compursory addition
+for(let i=0; i<funcArr.length; i++){
+    password+=funcArr[i]();
+}
+
+//remaining addition
+for(let i=0; i<passwordLength-funcArr.length; i++){
+    let randIndex= getRndInteger(0, funcArr.length);
+    password+= funcArr[randIndex]();
+   
+}
+
+//shuffle the password
+password=shufflePassword(Array.from(password));
+
+//show in UI
+passwordDisplay.value=password;
+
+//calculate strength
+calcStrength();
 
 })
+
+
 
