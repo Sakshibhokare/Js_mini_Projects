@@ -1,7 +1,7 @@
 const inputSlider = document.querySelector("[data-lengthSlider]")
 const lengthDisplay = document.querySelector("[data-lengthNumber]")
 const passwordDisplay = document.querySelector("[data-passwordDisplay]")
-const copyBtn = document.querySelector("[data-copy]");
+const copyBtn = document.querySelector("[data-copyBtn]");
 const copyMsg = document.querySelector("[data-copyMsg]");
 const uppercaseCheck = document.querySelector("#uppercase");
 const lowercaseCheck = document.querySelector("#lowercase");
@@ -106,15 +106,15 @@ async function copyContent() {
 
 }
 
-inputSlider.addEventListener('input', (e) => {
-    passwordLength = e.target.value;
-    handleSlider();
-})
-
-// copyBtn.addEventListener('click', (e) => {
-//     if (passwordDisplay.value)
-//         copyContent();
+// inputSlider.addEventListener('input', (e) => {
+//     passwordLength = e.target.value;
+//     handleSlider();
 // })
+
+// // copyBtn.addEventListener('click', (e) => {
+// //     if (passwordDisplay.value)
+// //         copyContent();
+// // })
 
 function handleCheckboxChange() {
     checkCount = 0;
@@ -133,6 +133,16 @@ function handleCheckboxChange() {
 allCheckBox.forEach((checkbox) => {
     checkbox.addEventListener('change', handleCheckboxChange)
 })
+
+inputSlider.addEventListener('input', (e) => {
+    passwordLength = e.target.value;
+    handleSlider();
+})
+
+copyBtn.addEventListener('click', () => {
+    if (passwordDisplay.value)
+        copyContent();
+});
 
 function shufflePassword(array){
 //Fisher yates method
@@ -212,7 +222,10 @@ passwordDisplay.value=password;
 //calculate strength
 calcStrength();
 
-})
+});
+
+
+
 
 
 
