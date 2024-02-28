@@ -147,6 +147,7 @@ copyBtn.addEventListener('click', () => {
 function shufflePassword(array){
 //Fisher yates method
 for(let i= array.length-1; i>0; i--){
+    //multiply by i+1 then the range will be 0 to i
     const j=Math.floor(Math.random()*(i+1));
     const temp = array[i];
     array[i] = array[j];
