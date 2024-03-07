@@ -47,3 +47,20 @@ async function getCustomWeatherDetails(){
     }
     
 }
+
+function getLocation(){
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } 
+      else{
+         console.log("No geoLocation Support");
+      }
+}
+
+function showPosition(position){
+    let lat = position.coords.latitude;
+    let longi = position.coords.longitude;
+
+    console.log(lat);
+    console.log(longi);
+}
